@@ -1,0 +1,16 @@
+{
+  "name": "webapp-starter",
+  "private": true,
+  "version": "0.0.0",
+  "description": "VentureHacks starter project for AngularJS",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/venture-hacks/webapp-starter.git"
+  },
+  "license": "MIT",
+  "devDependencies": {},
+  "scripts": {},
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "webapp-starter",
+  "description": "A starter project for AngularJS",
+  "version": "0.0.0",
+  "homepage": "https://github.com/venture-hacks/webapp-starter.git",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "angular": "~1.5.x"
+  }
+}

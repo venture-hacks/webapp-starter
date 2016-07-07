@@ -1,0 +1,7 @@
+# These are all the files / directories that should not be included in the git repo
+
+logs/*
+node_modules/
+bower_components/
+.DS_Store
+.idea
