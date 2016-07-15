@@ -3,34 +3,77 @@
     <head>
         <meta charset="utf-8">
         <title>Venture Hacks 2016</title>
-        <link rel="stylesheet" href="app.css">
-        <link rel="stylesheet" href="bower_components/bootstrap-css-only/css/bootstrap.min.css">
-        <link rel="stylesheet" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css">
-    </head>
-    <body>
+        <!-- The main Styles for our small app -->
+        <link rel="stylesheet" href="bower_components/bootstrap-css-only/css/bootstrap.min.css" type='text/css'>
+        <link rel="stylesheet" href="bower_components/angular-bootstrap/ui-bootstrap-csp.css" type='text/css'>
+        <!-- Load ours last so it's not overwritten -->
+        <link rel="stylesheet" href="app.css" type='text/css'>
 
-        <div id="main" class="container" ng-controller="houndTweetController">
+        <!-- A few Google Fonts from: https://www.google.com/fonts -->
+        <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Montserrat|Open+Sans' type='text/css'>
+    </head>
+    <!-- Controllers: they contain the logic for a html section.
+               You can have multiple controllers nested inside of each other. -->
+    <body ng-controller="houndTweetController">
+        <div id="background"></div>
+
+        <div id="main" class="container" >
+            <!-- Bootstrap sets a bunch of useful classes to help with all kinds of layouts. Grids are easiest.-->
             <div class="span12 text-center">
+                <!-- When a variable or function is put in the $scope, it can be injected straight into the HTML
+                       in two ways:
+                        if the attribute is an ng-attribute: no need for {{ }}
+                        otherwise: wrap the javascript variable / function in {{ }} and angular will process it
+                       -->
                 <section ng-show="!isRecording">
-                    <button class="btn btn-primary btn-lg" ng-model="isRecording" uib-btn-checkbox
-                            uib-checkbox-false="0" uib-checkbox-true="1" ng-click="startStopVoiceSearch()">
+                    <!-- Data binding in Angular is the coolest:
+                        ng-model allows us to reference a variable in the $scope
+                            and changes are reflected both in the javascript and in the html
+                         -->
+                    <button class="btn btn-primary btn-lg" ng-model="isRecording" ng-click="startStopVoiceSearch()">
+                        <!-- Bootstrap has a ton of icons preloaded:
+                            http://www.w3schools.com/icons/bootstrap_icons_glyphicons.asp -->
                         <i class="glyphicon glyphicon-record"></i>
                     </button>
                 </section>
 
-                <section id="tweetInput" class="container" ng-show="isRecording">
-                    <div class="span12">
-                        <form class="form-group">
-                            <textarea id="voiceInput" type="text" class="form-control" ng-model="tweet"></textarea>
-                        </form>
-                        <uib-progressbar max="140" value="tweet.length" type="{{progressType()}}">
-                            <span>{{tweet.length}} / 140</span>
-                        </uib-progressbar>
-                    </div>
+                <!-- ng-show / ng-hide will dynamically show/hide elements.
+                        They can be given functions or variables -->
+                <section id="tweetContainer" class="container" ng-show="isRecording">
+                    <h1 class="text-center">Speak your mind</h1>
+                    <form class="form-group span12">
+                        <textarea id="voiceInput" type="text" class="form-control" ng-model="tweet"></textarea>
+
+                        <div ng-hide="tweet.length == 0">
+                            <!-- This is called a directive. It is an Angular-defined html element, generated from a template.-->
+                            <uib-progressbar max="140" value="tweet.length" type="{{progressType()}}">
+                                <span>{{tweet.length}} / 140</span>
+                            </uib-progressbar>
+
+                            <!-- These functions are defined in the $scope -->
+                            <button class="btn btn-primary" ng-click="sendTweet()">
+                                Tweet it yo
+                            </button>
+                            <button class="btn btn-default" ng-click="resetTweet()">
+                                Reset
+                            </button>
+                        </div>
+                    </form>
                 </section>
             </div>
         </div>
 
+        <aside id="tweetsColumn">
+            <p><b>What's been on your mind: </b></p>
+            <!-- ng-repeat will work over an iterable like an array:
+                  Angular creates a new html element for each one in the set
+                  Very helpful for array data
+                  Also works for objects like ` ng-repeat="(key, value) in myObj" `
+             -->
+            <p ng-repeat="t in tweets">{{t}}</p>
+        </aside>
+
+        <!-- Load all of our scripts ! -->
         <!-- The main -->
         <script src="bower_components/angular/angular.min.js"></script>
         <!-- Requirements for angular ui bootstrap -->

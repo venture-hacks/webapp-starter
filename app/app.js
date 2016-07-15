@@ -1,11 +1,16 @@
 'use strict';
+// Wondering why this is a function wrapped in parenthesis?
+// It's a closure! They're great for hiding your code.
+// Without them variables are usually created globally, available to any other
+// scripts that could be running.
 (function() {
     var API_BASE_URL = 'http://localhost:8080/api';
     var houndClientId = '***REMOVED***';
 
     //REQUEST INFO JSON
-    //see https://houndify.com/reference/RequestInfo
-    // This can be used to have 'conversations' with Houndify
+    // @see https://houndify.com/reference/RequestInfo
+    // Holds relevant information about the current context
+    // This can be used to keep track of 'conversations' with Houndify
     var requestInfo = {
         ClientID: houndClientId,
         UserID: "adVenturer", // Lol puke
@@ -13,6 +18,7 @@
         Longitude: 74.0324
     };
 
+    // Set up the basic Houndify Client
     var houndClient = new Houndify.HoundifyClient({
         // Can be any name that identifies your client
         clientId: houndClientId,
@@ -31,46 +37,75 @@
         },
 
         //Enable Voice Activity Detection
+        // Like Siri: stops recording when you stop talking
         //Default: true
-        enableVAD: true,
+        enableVAD: false,
 
         // Event Listeners
-
         onError: function(err, info) {
+            console.log("Error with Houndify!");
             console.log(err);
             console.log(info);
         },
 
         onRecordingStarted: function() {
-            console.log('Recording');
+            console.log('Recording to Houndify!');
         }
         // We can add more listeners to customize the actions as we please
     });
 
 
-    // Declare app level module which depends on views, and components
-    var app = angular.module('ventureApp', [
-      'ui.bootstrap'
-    ]);
+    // Declare app level module
+    // The first parameter is the name
+    // The second parameter is an array of other modules we'd like to use
+    var app = angular.module('ventureApp', ['ui.bootstrap']);
 
-    app.controller('houndTweetController', ['$scope',
-        function($scope) {
-
+    app.controller('houndTweetController', ['$scope', '$http',
+        function($scope, $http) {
+            // Default values
             $scope.isRecording = false;
             $scope.tweet = '';
+            $scope.tweets = [];
 
+            // Set default values
+            $http.get(API_BASE_URL + '/tweets')
+                .success(function(data) {
+                    $scope.tweets = data.tweets;
+                })
+                .error(function(error, responseCode) {
+                    console.log("Error GETing tweets");
+                    console.log(error);
+                    console.log("Error response: " + responseCode);
+                });
+
+            // Setup the Hound Client to update our tweet when it processes speech
+            houndClient.listeners.onTranscriptionUpdate = function(trObj) {
+                // Must call $apply() on the scope when updating data in a callback
+                // For longer callback functions, wrap the entire function in an $apply
+                $scope.tweet = trObj.PartialTranscript;
+                $scope.$apply();
+                console.log($scope.tweet);
+            };
+
+            // ---- Functions that can be called from the html template ---- :
+
+            // Either stop / start the voice to tweet recording and show the button
             $scope.startStopVoiceSearch = function() {
                 if (houndClient.voiceSearch.isStreaming()) {
                     //stops streaming voice search requests, expects the final response from backend
+                    $scope.isRecording = false;
                     houndClient.voiceSearch.stop();
                 } else {
+                    $scope.isRecording = true;
                     houndClient.voiceSearch.start(requestInfo);
                     //starts streaming of voice search requests to Houndify backend
                 }
             };
 
+            // Determines which state the progressBar should be in depending
+            //  on how close the tweet is to exceeding the 140 char limit
             $scope.progressType = function() {
-                var tweetLength = this.tweet.length;
+                var tweetLength = $scope.tweet.length;
                 var type = 'danger';
                 if (tweetLength < 120) {
                     type = 'success';
@@ -80,10 +115,47 @@
                 return type;
             };
 
-            houndClient.listeners.onTranscriptionUpdate = function(trObj) {
-                $scope.tweet = trObj.PartialTranscript;
-                console.log($scope.tweet);
+            // Will send whatever we have as the tweet to our backend to be tweeted
+            $scope.sendTweet = function() {
+                // Do some simple error checking
+                if ($scope.tweet.length > 140) {
+                    // Could expand here and show a nice error message to the user
+                    console.log("Can't write a tweet longer than 140 Characters. Duh.");
+                    return;
+                }
+
+                $http.post(API_BASE_URL + '/tweets', {tweet: this.tweet})
+                    .success(function(data) {
+                        // Our tweet was successfully posted!
+                        console.log("Successfully posted tweet: " + $scope.tweet);
+                        // Add the tweet to the list of all twee ts
+                        $scope.tweets.push($scope.tweet);
+                        // Reset the tweet
+                        $scope.tweet = '';
+                        // Shut off the voice search
+                        $scope.startStopVoiceSearch();
+                        // NOTE: $apply does not have to be called since $http is already an angular method
+                    })
+                    .error(function(error, responseCode) {
+                        // Something bad happened :/
+                        console.log("Error POSTing Tweets");
+                        console.log(error);
+                        console.log("Error response: " + responseCode);
+                    });
             };
+
+            // Resets the current tweet and restarts the voice service
+            $scope.resetTweet = function() {
+                $scope.tweet = '';
+                houndClient.voiceSearch.stop();
+
+                // Hound needs a little time to process the 'stop' call
+                // Note: This is not the best way to do this. Can you think of a better one?
+                setTimeout(function() {
+                    // Gives a 250 millisecond wait before the voice analysis is restarted
+                    houndClient.voiceSearch.start(requestInfo);
+                }, 250);
+            }
     }]);
 
 })();

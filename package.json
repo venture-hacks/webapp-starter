@@ -2,14 +2,16 @@
   "name": "webapp-starter",
   "private": true,
   "version": "0.0.0",
-  "description": "VentureHacks starter project for AngularJS",
+  "description": "VentureHacks starter project for AngularJS and Node",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/venture-hacks/webapp-starter.git"
   },
   "license": "MIT",
   "devDependencies": {},
-  "scripts": {},
+  "scripts": {
+    "serve": "node server.js"
+  },
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",

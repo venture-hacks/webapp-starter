@@ -1,9 +1,43 @@
+/* Stretch the app to be absolutely fullscreen */
 html, body {
     width: 100%;
     margin: 0;
 }
 
-/* Vertically centered */
+/* Define the fonts for consistency
+    Important to have generic defaults as well
+*/
+h1 {
+    font-family: 'Montserrat', serif;
+}
+
+p {
+    font-family: 'Open Sans', sans-serif;
+}
+
+/* Sets up the slowly changing gradient */
+#background {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    overflow: hidden;
+    z-index: -100;
+    width: 100%;
+    height: 100%;
+
+    background: linear-gradient(270deg, #2c3e50, #343432);
+    background-size: 400% 400%;
+
+    -webkit-animation: BackgroundAnimation 20s ease infinite;
+    -moz-animation: BackgroundAnimation 20s ease infinite;
+    -o-animation: BackgroundAnimation 20s ease infinite;
+    animation: BackgroundAnimation 20s ease infinite;
+}
+
+/*  The main point
+    Vertically centered */
 #main {
     width: 100%;
     position: absolute;
@@ -11,10 +45,16 @@ html, body {
     transform: translateY(-50%);
 }
 
-#tweetInput {
+/* The wrapper for the tweet text input and buttons */
+#tweetContainer {
+    color: white;
     width: 50%;
 }
-
+/* Gives some space between buttons and inputs */
+#tweetContainer form * {
+    margin-bottom: 8px;
+}
+/* The voice - to - text input */
 #voiceInput {
     resize: vertical;
 }
@@ -23,4 +63,38 @@ html, body {
 uib-progressbar span {
     color: white;
     white-space: nowrap;
+}
+
+/* Sidebar to hold all the past tweets */
+#tweetsColumn {
+    left: 0;
+    top: 0;
+    margin-left: 20px;
+    margin-top: 50px;
+    position: absolute;
+    text-align: left;
+    color: lightgray;
+    z-index: -1;
+}
+
+
+@-webkit-keyframes BackgroundAnimation {
+    0% {background-position: 0 50%}
+    50% {background-position: 100% 50%}
+    100% {background-position: 0 50%}
+}
+@-moz-keyframes BackgroundAnimation {
+    0% {background-position: 0 50%}
+    50% {background-position: 100% 50%}
+    100% {background-position: 0 50%}
+}
+@-o-keyframes BackgroundAnimation {
+    0% {background-position: 0 50%}
+    50% {background-position: 100% 50%}
+    100% {background-position: 0 50%}
+}
+@keyframes BackgroundAnimation {
+    0% {background-position: 0 50%}
+    50% {background-position: 100% 50%}
+    100% {background-position: 0 50%}
 }
