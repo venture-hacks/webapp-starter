@@ -6,6 +6,10 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
-    "angular": "~1.5.x"
+    "angular": "~1.5.x",
+    "houndify-web-sdk.min": "./node_modules/houndify/dist/houndify-web-sdk.min.js",
+    "angular-bootstrap": "^1.3.3",
+    "angular-animate": "^1.5.7",
+    "angular-touch": "^1.5.7"
   }
 }

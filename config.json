@@ -1,0 +1,9 @@
+{
+  "apiBase": "api",
+  "twitter_consumer_key": "***REMOVED***",
+  "twitter_consumer_secret": "***REMOVED***",
+  "twitter_access_token_key": "***REMOVED***",
+  "twitter_access_token_secret": "***REMOVED***",
+  "houndify_client_id": "***REMOVED***",
+  "houndify_client_key": "***REMOVED***"
+}
