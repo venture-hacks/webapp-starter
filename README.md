@@ -24,7 +24,7 @@ cd webapp-starter
 If you just want to start a new project without the commit history then you can do:
 
 ```bash
-git clone --depth=1 https://github.com/venturehacks/webapp-starter.git <your-project-name>
+git clone --depth=1 https://github.com/venture-hacks/webapp-starter.git <your-project-name>
 ```
 
 The `depth=1` tells git to only pull down one commit worth of historical data.
@@ -53,10 +53,7 @@ it easier to serve the files by a webserver.*
 
 ```
 app/                    --> all of the source files for the application
-  components/           --> all app specific modules
-  view1/                --> the view1 view template and logic
-    view1.html            --> the partial template
-    view1.js              --> the controller logic
+  components/           --> all app specific modules and directives
   app.css               --> default stylesheet
   app.js                --> main application module
   index.html            --> app layout file (the main html template file of the app)
@@ -70,8 +67,16 @@ We will write the server to handle small functions on the backend and serve the 
 node server.js
 ```
 
+or
+
+```bash
+npm run serve
+```
+
 ## Resources
 
+## Improvements to this app (??)
+- Dynamic scaling is needed!
 
 ## Further Reading
 
