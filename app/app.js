@@ -1,3 +1,9 @@
+/**
+ * This is the main application logic for our small angular app
+ * Here we define 'modules' -- angular's term to break applications into smaller pieces
+ *
+* */
+
 'use strict';
 // Wondering why this is a function wrapped in parenthesis?
 // It's a closure! They're great for hiding your code.
@@ -60,6 +66,10 @@
     // The second parameter is an array of other modules we'd like to use
     var app = angular.module('ventureApp', ['ui.bootstrap']);
 
+    // Controllers hold the logic for specific pieces of the application
+    // The first param is the name, the second is an array of 'services' required
+    //  Services are objects that provide functionality and can be used across the app
+    // The last element in the array is a function, which is the real 'controller' piece
     app.controller('houndTweetController', ['$scope', '$http',
         function($scope, $http) {
             // Default values
@@ -68,6 +78,8 @@
             $scope.tweets = [];
 
             // Set default values
+
+            // Fetch all past tweet texts from our backend
             $http.get(API_BASE_URL + '/tweets')
                 .success(function(data) {
                     $scope.tweets = data.tweets;
@@ -127,7 +139,7 @@
                 $http.post(API_BASE_URL + '/tweets', {tweet: this.tweet})
                     .success(function(data) {
                         // Our tweet was successfully posted!
-                        console.log("Successfully posted tweet: " + $scope.tweet);
+                        console.log("Successfully posted tweet: " + data.tweet);
                         // Add the tweet to the list of all twee ts
                         $scope.tweets.push($scope.tweet);
                         // Reset the tweet
