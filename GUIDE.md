@@ -1,6 +1,166 @@
-# Step-by-Step Guide for this Small Tutorial
+# Step-by-Step Guide for this Small Webapp
 
-## Installation
+## Step 0: Bare Node
+Node is a great platform. It allows javascript to run server-side and has a 
+dope community.  
+It has helpful runtime variables like `__dirname` which contains the working
+directory, to name just one.
+Most importantly, it allows you to import 'modules' (other libraries of code)
+as well as other json files.  
+
+Look in `server.js` to see a config file loaded into an objec using the 
+`require()` method.  We'll configure later.  
+
+## Step 1: Express
+The most popular node server framework is [express](https://expressjs.com/). 
+We'll use it to both serve our frontend app and build a small RESTful API backend.  
+___Note: in production / in larger apps, it makes sense to separate the two___  
+
+The basic server is quite easy, as is running it on our local machine:
+In server.js
+```node
+    var express = require('express');
+    var app = express();
+
+    // THIS SHOULD ALWAYS BE THE LAST CALL IN THIS FILE
+    // The first parameter is the port, the second is an optional callback on success.
+    app.listen(8080, function() {
+        console.log("App is running on localhost:8080");
+    });
+```
+
+## Step 2: Twitter + Houndify Node
+Node and its community provide a great way to use Apis. Many libraries exist
+for virtually every API to expose the core features in a programmatic / not pure 
+HTTP way.  
+
+We'll use a Twitter and Houndify's Express library to interact with their APIs.
+
+For Twitter:
+
+In server.js
+```node
+    var Twitter = require('twitter');
+
+    // Configure twitter with access tokens to authenticate requests
+    // New applications can be registered to accounts @ https://apps.twitter.com/
+    // For now, you can use our Test Account: https://twitter.com/venturetests
+    var twitClient = new Twitter({
+        consumer_key: config['twitter_consumer_key'],
+        consumer_secret: config['twitter_consumer_secret'],
+        access_token_key: config['twitter_access_token_key'],
+        access_token_secret: config['twitter_access_token_secret']
+    });
+```
+
+For Houndify we need something a little different. We need an authentication
+handler to verify with their API and we need a 'textProxyHandler' to format
+our requests to their liking. Both of these will be used by the frontend 
+Houndify Client.  
+Once you've registered your Houndify Client and claimed your trial code, 
+update the `config.json` file.
+
+In server.js
+```node
+    var houndifyExpress = require('houndify').HoundifyExpress;
+    //authenticates requests so the service knows we're legit
+    app.get(API_BASE + '/houndifyAuth', houndifyExpress.createAuthenticationHandler({
+        clientId:  config["houndify_client_id"],
+        clientKey: config["houndify_client_key"]
+    }));
+    
+    //sends the request to Houndify backend with authentication headers
+    app.get(API_BASE + '/textSearchProxy', houndifyExpress.createTextProxyHandler());
+```
+
+## Step 3: Creating a RESTful API 
+We want to expose the Twitter Client to post and fetch our tweets.  
+We'll create a small API in RESTful style. The biggest thing about REST is 
+that each request can be handled independently, without prior context. (Statelessness)  
+Another big piece of REST is the resources: they should be accessed / computed on
+depending on the type of HTTP request.
+
+Our HTTP endpoint setup is:
+
+    GET /tweets
+    Accept: application/json  
+        Fetches all our tweets and responds with just a list of their text
+    
+    POST /tweets  
+    Accept: application/json  
+        Pulls in data from the requests body and tweets it
+    
+So the same resource endpoint has different actions depending on the 
+request method.
+
+In server.js
+```node
+    // These are pretty unnecessary endpoints, just an example of using node on a backend
+    // Basically just wrappers for using the Twitter API directly, but I'm sure you'll find a more creative use
+    // Also check out the Streaming API for real time tweets
+    app.get(API_BASE + '/tweets', function(req, res) {
+        twitClient.get('statuses/user_timeline', {}, function(errors, tweetObjs, response) {
+            if (errors) {
+                // If you are unfamiliar with HTTP status codes, no worries! They're easy to look up
+                res.status(response.statusCode).send({errors: errors});
+            } else {
+                // We'll only use the text from the tweets, so strip them from the response
+                var tweets = [];
+                for (var i = 0; i < tweetObjs.length; i++)
+                    tweets.push(tweetObjs[i].text)
+                res.status(200).send({tweets: tweets});
+            }
+        });
+    });
+    
+    app.post(API_BASE + '/tweets', function(req, res) {
+        // body-parser puts json data sent from our angular app into the body of the request
+        var tweetText = req.body.tweet;
+        // This will greatly slow down the response time. NOT MEANT TO BE A PRODUCTION EXAMPLE
+        twitClient.post('statuses/update', {status: tweetText}, function(errors, tweet, response) {
+            if (errors) {
+                // If you are unfamiliar with HTTP status codes, no worries! They're easy to look up
+                res.status(response.statusCode).send({errors: errors});
+            } else {
+                res.status(response.statusCode).send({tweet: tweet});
+            }
+        });
+    });
+```
+
+## Step 4: Serving the App + Middleware
+Middleware in express processes parts of the requests to make data more 
+accessible and requests easier to handle.
+
+Examples:
+* Log all requests that come in
+* Parse JSON content into a useable place
+* Serve static content
+
+We'll use a few middlewares to do these things:
+* morgan's dev 
+* body-parser
+* express.static
+
+app.use will apply these middlewares to all incoming requests.
+
+In server.js
+```node
+
+// Middleware -- processes parts of the requests to make data more accessible
+var bodyParser = require('body-parser');
+var jsonParser = bodyParser.json();
+var logger = require('morgan')('dev');
+
+
+// Host the Angular app as a static folder to simulate frontend
+// Express uses a middleware-type style: extensible and flexible
+app.use(express.static(__dirname + '/app'));
+// Parse json requests and write request logs to the console
+app.use(jsonParser);
+app.use(logger);
+```
+
 ## Step 5: Frontend Houndify
 We've set up our backend to use Houndify, but the frontend needs a way to communicate. Communication can be hard, people
 are scary, but Houndify is easy(-ish). Before we jump into Angular, let's setup our Houndify Client.
