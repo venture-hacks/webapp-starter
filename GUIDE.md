@@ -2,7 +2,154 @@
 
 ## Installation
 ## Angular
-## Serving
+## Step 7: $scope + $http
+This is a biggie -- the $scope service allows us to access the controllers javascript right from the html, basically.  
+We'll do a few things with this:
+* Update the Tweet text with Houndify
+* Hide and Show
+* Submit / Reset the Tweet 
+
+The $http service can be used to perform simple http requests: GET, POST, PUT ...  
+We must inject these into the controller like so:  
+
+In app.js
+```javascript
+    app.controller('houndTweetController', ['$scope', '$http',
+        function($scope, $http) {
+        ...
+    }
+```
+
+We can add variable and function to the $scope to be accessed in the html:
+
+In app.js
+```javascript
+    app.controller('houndTweetController', ['$scope', '$http',
+        function($scope, $http) {
+        // Default values
+        $scope.isRecording = false;
+        $scope.tweet = '';
+    }
+```
+
+Here are the functions we'll need. They should all be placed inside the controller.
+
+In app.js
+```javascript
+    // Setup the Hound Client to update our tweet when it processes speech
+    houndClient.listeners.onTranscriptionUpdate = function(trObj) {
+        // Must call $apply() on the scope when updating data in a callback
+        // For longer callback functions, wrap the entire function in an $apply
+        $scope.tweet = trObj.PartialTranscript;
+        $scope.$apply();
+        console.log($scope.tweet);
+    };
+
+    // ---- Functions that can be called from the html ---- :
+
+    // Either stop / start the voice to tweet recording and show the button
+    $scope.startStopVoiceSearch = function() {
+        if (houndClient.voiceSearch.isStreaming()) {
+            //stops streaming voice search requests, expects the final response from backend
+            $scope.isRecording = false;
+            houndClient.voiceSearch.stop();
+        } else {
+            $scope.isRecording = true;
+            houndClient.voiceSearch.start(requestInfo);
+            //starts streaming of voice search requests to Houndify backend
+        }
+    };
+    
+    // Will send whatever we have as the tweet to our backend to be tweeted
+    $scope.sendTweet = function() {
+        // Do some simple error checking
+        if ($scope.tweet.length > 140) {
+            // Could expand here and show a nice error message to the user
+            console.log("Can't write a tweet longer than 140 Characters. Duh.");
+            return;
+        }
+
+        $http.post(API_BASE_URL + '/tweets', {tweet: this.tweet})
+            .success(function(data) {
+                // Our tweet was successfully posted!
+                console.log("Successfully posted tweet: " + data.tweet);
+
+                // Reset the tweet
+                $scope.tweet = '';
+                // Shut off the voice search
+                $scope.startStopVoiceSearch();
+                // NOTE: $apply does not have to be called since $http is already an angular method
+            })
+            .error(function(error, responseCode) {
+                // Something bad happened :/
+                console.log("Error POSTing Tweets");
+                console.log(error);
+                console.log("Error response: " + responseCode);
+            });
+    };
+
+
+    // Resets the current tweet and restarts the voice service
+    $scope.resetTweet = function() {
+        $scope.tweet = '';
+        houndClient.voiceSearch.stop();
+
+        // Hound needs a little time to process the 'stop' call
+        // Note: This is not the best way to do this. Can you think of a better one?
+        setTimeout(function() {
+            // Gives a 250 millisecond wait before the voice analysis is restarted
+            houndClient.voiceSearch.start(requestInfo);
+        }, 250);
+    }
+```
+
+
+Finally, the html to setup the record button and input form:
+Hiding and showing are done with ng-hide and ng-show, which are give javascript expressions and change dynamically.
+In index.html
+```html
+    <!--Inside #main-->
+    <!-- Bootstrap sets a bunch of useful classes to help with all kinds of layouts. Grids are easiest.-->
+    <div class="span12 text-center">
+    
+        <!-- When a variable or function is put in the $scope, it can be injected straight into the HTML
+               in two ways:
+                if the attribute is an ng-attribute: no need for {{ }}
+                otherwise: wrap the javascript variable / function in {{ }} and angular will process it
+               -->
+        <section ng-show="!isRecording">
+            <!-- Data binding in Angular is the coolest:
+                ng-model allows us to reference a variable in the $scope
+                    and changes are reflected both in the javascript and in the html
+                 -->
+            <button class="btn btn-primary btn-lg" ng-click="startStopVoiceSearch()">
+                <!-- Bootstrap has a ton of icons preloaded:
+                    http://www.w3schools.com/icons/bootstrap_icons_glyphicons.asp -->
+                <i class="glyphicon glyphicon-record"></i>
+            </button>
+        </section>
+
+        <!-- ng-show / ng-hide will dynamically show/hide elements.
+                They can be given functions or variables -->
+        <section id="tweetContainer" class="container" ng-show="isRecording">
+            <h1 class="text-center">Speak your mind</h1>
+            <form class="form-group span12">
+                <textarea id="voiceInput" type="text" class="form-control" ng-model="tweet"></textarea>
+
+                <div ng-hide="tweet.length == 0">
+                    <!-- These functions are defined in the $scope -->
+                    <button class="btn btn-primary" ng-click="sendTweet()">
+                        Tweet it yo
+                    </button>
+                    <button class="btn btn-default" ng-click="resetTweet()">
+                        Reset
+                    </button>
+                </div>
+            </form>
+        </section>
+    </div>
+```
+
 ## Step 8: UI Bootstrap
 [UI Bootstrap](https://angular-ui.github.io/bootstrap/) is a library for Bootstrap components 
 built for Angular. Gives us a lot of pretty buttons and bars to use. 

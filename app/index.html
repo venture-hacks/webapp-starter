@@ -18,44 +18,7 @@
         <div id="background"></div>
 
         <div id="main" class="container" >
-            <!-- Bootstrap sets a bunch of useful classes to help with all kinds of layouts. Grids are easiest.-->
-            <div class="span12 text-center">
-                <!-- When a variable or function is put in the $scope, it can be injected straight into the HTML
-                       in two ways:
-                        if the attribute is an ng-attribute: no need for {{ }}
-                        otherwise: wrap the javascript variable / function in {{ }} and angular will process it
-                       -->
-                <section ng-show="!isRecording">
-                    <!-- Data binding in Angular is the coolest:
-                        ng-model allows us to reference a variable in the $scope
-                            and changes are reflected both in the javascript and in the html
-                         -->
-                    <button class="btn btn-primary btn-lg" ng-model="isRecording" ng-click="startStopVoiceSearch()">
-                        <!-- Bootstrap has a ton of icons preloaded:
-                            http://www.w3schools.com/icons/bootstrap_icons_glyphicons.asp -->
-                        <i class="glyphicon glyphicon-record"></i>
-                    </button>
-                </section>
 
-                <!-- ng-show / ng-hide will dynamically show/hide elements.
-                        They can be given functions or variables -->
-                <section id="tweetContainer" class="container" ng-show="isRecording">
-                    <h1 class="text-center">Speak your mind</h1>
-                    <form class="form-group span12">
-                        <textarea id="voiceInput" type="text" class="form-control" ng-model="tweet"></textarea>
-
-                        <div ng-hide="tweet.length == 0">
-                            <!-- These functions are defined in the $scope -->
-                            <button class="btn btn-primary" ng-click="sendTweet()">
-                                Tweet it yo
-                            </button>
-                            <button class="btn btn-default" ng-click="resetTweet()">
-                                Reset
-                            </button>
-                        </div>
-                    </form>
-                </section>
-            </div>
         </div>
 
         <!-- Load all of our scripts ! -->
