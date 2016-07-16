@@ -63,16 +63,6 @@
             </div>
         </div>
 
-        <aside id="tweetsColumn">
-            <p><b>What's been on your mind: </b></p>
-            <!-- ng-repeat will work over an iterable like an array:
-                  Angular creates a new html element for each one in the set
-                  Very helpful for array data
-                  Also works for objects like ` ng-repeat="(key, value) in myObj" `
-             -->
-            <p ng-repeat="t in tweets">{{t}}</p>
-        </aside>
-
         <!-- Load all of our scripts ! -->
         <!-- The main -->
         <script src="bower_components/angular/angular.min.js"></script>

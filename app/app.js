@@ -75,20 +75,6 @@
             // Default values
             $scope.isRecording = false;
             $scope.tweet = '';
-            $scope.tweets = [];
-
-            // Set default values
-
-            // Fetch all past tweet texts from our backend
-            $http.get(API_BASE_URL + '/tweets')
-                .success(function(data) {
-                    $scope.tweets = data.tweets;
-                })
-                .error(function(error, responseCode) {
-                    console.log("Error GETing tweets");
-                    console.log(error);
-                    console.log("Error response: " + responseCode);
-                });
 
             // Setup the Hound Client to update our tweet when it processes speech
             houndClient.listeners.onTranscriptionUpdate = function(trObj) {
@@ -140,8 +126,7 @@
                     .success(function(data) {
                         // Our tweet was successfully posted!
                         console.log("Successfully posted tweet: " + data.tweet);
-                        // Add the tweet to the list of all twee ts
-                        $scope.tweets.push($scope.tweet);
+
                         // Reset the tweet
                         $scope.tweet = '';
                         // Shut off the voice search
