@@ -13,6 +13,16 @@
     var API_BASE_URL = 'http://localhost:8080/api';
     var houndClientId = '***REMOVED***';
 
+    //REQUEST INFO JSON
+    // @see https://houndify.com/reference/RequestInfo
+    // Holds relevant information about the current context
+    // This can be used to keep track of 'conversations' with Houndify
+    var requestInfo = {
+        ClientID: houndClientId,
+        UserID: "adVenturer", // Lol puke
+        Latitude: 40.7440,
+        Longitude: 74.0324
+    };
     // Set up the basic Houndify Client
     var houndClient = new Houndify.HoundifyClient({
         // Can be any name that identifies your client
