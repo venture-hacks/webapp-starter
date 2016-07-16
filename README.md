@@ -1,9 +1,11 @@
-# venturehacks-seed — the seed for the VentureHacks basic tech session
+# webapp-starter — the seed for the VentureHacks tech session
 
 
 ## Getting Started
 
-To get you started you can simply clone the webapp-starter repository and install the dependencies:
+To get you started you can simply clone the webapp-starter repository 
+and install the dependencies. If you get lost, either yell my name out and flail 
+or use git to pull the next step down.
 
 ### Prerequisites
 
@@ -17,17 +19,17 @@ Have installed:
 Clone the webapp-starter repository using [git][git]:
 
 ```bash
-git clone https://github.com/venture-hacks/webapp-starter.git
+git clone -b step-0 https://github.com/venture-hacks/webapp-starter.git
 cd webapp-starter
 ```
 
-If you just want to start a new project without the commit history then you can do:
+The ```-b start``` specifies the branch to clone. We will start with the 'step-0' branch.  
+If you get lost along the way, feel free to just clone the branch at our current step.  
+You can also 'pull' the step's branch that you want with git like so:
 
 ```bash
-git clone --depth=1 https://github.com/venture-hacks/webapp-starter.git <your-project-name>
-```
 
-The `depth=1` tells git to only pull down one commit worth of historical data.
+```
 
 ### Install Dependencies
 
