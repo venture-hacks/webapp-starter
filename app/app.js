@@ -13,17 +13,6 @@
     var API_BASE_URL = 'http://localhost:8080/api';
     var houndClientId = '***REMOVED***';
 
-    //REQUEST INFO JSON
-    // @see https://houndify.com/reference/RequestInfo
-    // Holds relevant information about the current context
-    // This can be used to keep track of 'conversations' with Houndify
-    var requestInfo = {
-        ClientID: houndClientId,
-        UserID: "adVenturer", // Lol puke
-        Latitude: 40.7440,
-        Longitude: 74.0324
-    };
-
     // Set up the basic Houndify Client
     var houndClient = new Houndify.HoundifyClient({
         // Can be any name that identifies your client
@@ -59,17 +48,4 @@
         }
         // We can add more listeners to customize the actions as we please
     });
-
-
-    // Declare app level module
-    // The first parameter is the name
-    // The second parameter is an array of other modules we'd like to use
-    var app = angular.module('ventureApp', []);
-
-    // Controllers hold the logic for specific pieces of the application
-    // The first param is the name, the second is an array of 'services' required
-    //  Services are objects that provide functionality and can be used across the app
-    // The last element in the array is a function, which is the real 'controller' piece
-    app.controller('houndTweetController', [function() {}]);
-
 })();

@@ -1,7 +1,72 @@
 # Step-by-Step Guide for this Small Tutorial
 
 ## Installation
-## Angular
+## Step 5: Frontend Houndify
+We've set up our backend to use Houndify, but the frontend needs a way to communicate. Communication can be hard, people
+are scary, but Houndify is easy(-ish). Before we jump into Angular, let's setup our Houndify Client.
+
+First we'll create variables for our Api's url and our Houndify ClientId. We will create this inside
+ the closure function. (function() {  /* HERE */  })();
+
+In app.js
+```javascript
+    var API_BASE_URL = 'http://localhost:8080/api';
+    var houndClientId = '***REMOVED***';
+```
+
+Then we just need one extra piece: the requestInfo. The requestInfo helps keep
+track of the conversation with Houndify, a crazy cool way to handle voice. Siri step aside.  
+
+```javascript
+```
+
+Houndify makes a bunch of different Clients for many different languages. 
+We'll be using the [Web Client](https://docs.houndify.com/sdks/docs/web)
+
+## Step 6: Angular app setup
+Angular app's are modular, meaning you can build them from many different pieces.
+'Modules' can depend on other modules for their functionality.
+Angular is html heavy -- which is good! Angular easily integrates into html and 
+extends it.  
+
+Modules can contain a variety of Angular things:
+- Controllers
+- Directives
+- Services
+- Filters
+
+We will only cover controllers right now, but the others are so dope you 
+need to check them out!! Shit's lit.  
+Controllers are attached to HTML elements and contain the elements logic and data.  
+
+We first need to create the 'app' module and then add a controller.
+
+In app.js
+```javascript
+    // Declare app level module
+    // The first parameter is the name
+    // The second parameter is an array of other modules we'd like to use
+    var app = angular.module('ventureApp', []);
+
+    // Controllers hold the logic for specific pieces of the application
+    // The first param is the name, the second is an array of 'services' required
+    //  Services are objects that provide functionality and can be used across the app
+    // The last element in the array is a function, which is the real 'controller' piece
+    app.controller('houndTweetController', [function() {}]);
+```
+
+Then we can bind these to the HTML page to create our small app:
+
+In index.html
+```html
+<html ng-app="ventureApp">
+    ...
+    <body ng-controller="houndTweetController">
+    ...
+    </body>
+</html>
+```
+
 ## Step 7: $scope + $http
 This is a biggie -- the $scope service allows us to access the controllers javascript right from the html, basically.  
 We'll do a few things with this:
