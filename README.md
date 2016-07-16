@@ -23,12 +23,12 @@ git clone -b step-0 https://github.com/venture-hacks/webapp-starter.git
 cd webapp-starter
 ```
 
-The ```-b start``` specifies the branch to clone. We will start with the 'step-0' branch.  
+The ```-b step-0``` specifies the branch to clone. We will start with the 'step-0' branch.  
 If you get lost along the way, feel free to just clone the branch at our current step.  
 You can also 'pull' the step's branch that you want with git like so:
 
 ```bash
-
+    git checkout {step's branch}
 ```
 
 ### Install Dependencies
@@ -75,12 +75,12 @@ or
 npm run serve
 ```
 
-## Resources
-
 ## Improvements to this app (??)
 - Dynamic scaling is needed!
+- What else do you think?
 
-## Further Reading
+## Further Reading:
+    Ask me!
 
 [git]: http://git-scm.com/
 [bower]: http://bower.io
