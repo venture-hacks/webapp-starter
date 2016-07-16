@@ -45,11 +45,6 @@
                         <textarea id="voiceInput" type="text" class="form-control" ng-model="tweet"></textarea>
 
                         <div ng-hide="tweet.length == 0">
-                            <!-- This is called a directive. It is an Angular-defined html element, generated from a template.-->
-                            <uib-progressbar max="140" value="tweet.length" type="{{progressType()}}">
-                                <span>{{tweet.length}} / 140</span>
-                            </uib-progressbar>
-
                             <!-- These functions are defined in the $scope -->
                             <button class="btn btn-primary" ng-click="sendTweet()">
                                 Tweet it yo

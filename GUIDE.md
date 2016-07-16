@@ -3,7 +3,55 @@
 ## Installation
 ## Angular
 ## Serving
-## Backend
+## Step 8: UI Bootstrap
+[UI Bootstrap](https://angular-ui.github.io/bootstrap/) is a library for Bootstrap components 
+built for Angular. Gives us a lot of pretty buttons and bars to use. 
+
+Firstly, need to 'inject' the dependency in the 'ventureApp' module:  
+
+In app.js
+```javascript
+
+var app = angular.module('ventureApp', ['ui.bootstrap']);
+
+```
+
+We'll use UI Bootstrap to show a progress bar for how long our tweet is. We can use a few pre-defined 'directives'
+straight in html like they are native elements.
+
+In index.html
+```html
+    <!-- Right above the Tweet button -->
+
+    <!-- This is called a directive. It is an Angular-defined html element, generated from a template.-->
+    <uib-progressbar max="140" value="tweet.length" type="{{progressType()}}">
+        <span>{{tweet.length}} / 140</span>
+    </uib-progressbar>
+```
+
+We can dynamically set the type of the bar (ie. green, orange, red) depending on how long our tweet is.
+
+In app.js
+```javascript
+    
+    // controller ...
+    
+    // Determines which state the progressBar should be in depending
+    //  on how close the tweet is to exceeding the 140 char limit
+    $scope.progressType = function() {
+        var tweetLength = $scope.tweet.length;
+        var type = 'danger';
+        if (tweetLength < 120) {
+            type = 'success';
+        } else if (tweetLength >= 120 && tweetLength <= 140) {
+            type = 'warning';
+        }
+        return type;
+    };
+    
+    // more controller ...
+```
+
 ## Step 9: Tweets List
 Wouldn't it be nice to see all those tweets you've already tweeted?  
 We'll add a small aside and load all of our past tweets in a list using Angular repeat:  

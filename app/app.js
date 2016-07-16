@@ -64,7 +64,7 @@
     // Declare app level module
     // The first parameter is the name
     // The second parameter is an array of other modules we'd like to use
-    var app = angular.module('ventureApp', ['ui.bootstrap']);
+    var app = angular.module('ventureApp', []);
 
     // Controllers hold the logic for specific pieces of the application
     // The first param is the name, the second is an array of 'services' required
@@ -85,7 +85,7 @@
                 console.log($scope.tweet);
             };
 
-            // ---- Functions that can be called from the html template ---- :
+            // ---- Functions that can be called from the html ---- :
 
             // Either stop / start the voice to tweet recording and show the button
             $scope.startStopVoiceSearch = function() {
@@ -98,19 +98,6 @@
                     houndClient.voiceSearch.start(requestInfo);
                     //starts streaming of voice search requests to Houndify backend
                 }
-            };
-
-            // Determines which state the progressBar should be in depending
-            //  on how close the tweet is to exceeding the 140 char limit
-            $scope.progressType = function() {
-                var tweetLength = $scope.tweet.length;
-                var type = 'danger';
-                if (tweetLength < 120) {
-                    type = 'success';
-                } else if (tweetLength >= 120 && tweetLength <= 140) {
-                    type = 'warning';
-                }
-                return type;
             };
 
             // Will send whatever we have as the tweet to our backend to be tweeted
