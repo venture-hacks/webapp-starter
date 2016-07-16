@@ -8,7 +8,8 @@ directory, to name just one.
 Most importantly, it allows you to import 'modules' (other libraries of code)
 as well as other json files.  
 
-Look in `server.js` to see a config
+Look in `server.js` to see a config file loaded into an objec using the 
+`require()` method.  We'll configure later.  
 
 ## Step 1: Express
 The most popular node server framework is [express](https://expressjs.com/). 
@@ -55,7 +56,9 @@ In server.js
 For Houndify we need something a little different. We need an authentication
 handler to verify with their API and we need a 'textProxyHandler' to format
 our requests to their liking. Both of these will be used by the frontend 
-Houndify Client.
+Houndify Client.  
+Once you've registered your Houndify Client and claimed your trial code, 
+update the `config.json` file.
 
 In server.js
 ```node
