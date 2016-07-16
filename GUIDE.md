@@ -1,5 +1,77 @@
 # Step-by-Step Guide for this Small Webapp
 
+## Step 0: Bare Node
+Node is a great platform. It allows javascript to run server-side and has a 
+dope community.  
+It has helpful runtime variables like `__dirname` which contains the working
+directory, to name just one.
+Most importantly, it allows you to import 'modules' (other libraries of code)
+as well as other json files.  
+
+Look in `server.js` to see a config file loaded into an objec using the 
+`require()` method.  We'll configure later.  
+
+## Step 1: Express
+The most popular node server framework is [express](https://expressjs.com/). 
+We'll use it to both serve our frontend app and build a small RESTful API backend.  
+___Note: in production / in larger apps, it makes sense to separate the two___  
+
+The basic server is quite easy, as is running it on our local machine:
+In server.js
+```node
+    var express = require('express');
+    var app = express();
+
+    // THIS SHOULD ALWAYS BE THE LAST CALL IN THIS FILE
+    // The first parameter is the port, the second is an optional callback on success.
+    app.listen(8080, function() {
+        console.log("App is running on localhost:8080");
+    });
+```
+
+## Step 2: Twitter + Houndify Node
+Node and its community provide a great way to use Apis. Many libraries exist
+for virtually every API to expose the core features in a programmatic / not pure 
+HTTP way.  
+
+We'll use a Twitter and Houndify's Express library to interact with their APIs.
+
+For Twitter:
+
+In server.js
+```node
+    var Twitter = require('twitter');
+
+    // Configure twitter with access tokens to authenticate requests
+    // New applications can be registered to accounts @ https://apps.twitter.com/
+    // For now, you can use our Test Account: https://twitter.com/venturetests
+    var twitClient = new Twitter({
+        consumer_key: config['twitter_consumer_key'],
+        consumer_secret: config['twitter_consumer_secret'],
+        access_token_key: config['twitter_access_token_key'],
+        access_token_secret: config['twitter_access_token_secret']
+    });
+```
+
+For Houndify we need something a little different. We need an authentication
+handler to verify with their API and we need a 'textProxyHandler' to format
+our requests to their liking. Both of these will be used by the frontend 
+Houndify Client.  
+Once you've registered your Houndify Client and claimed your trial code, 
+update the `config.json` file.
+
+In server.js
+```node
+    var houndifyExpress = require('houndify').HoundifyExpress;
+    //authenticates requests so the service knows we're legit
+    app.get(API_BASE + '/houndifyAuth', houndifyExpress.createAuthenticationHandler({
+        clientId:  config["houndify_client_id"],
+        clientKey: config["houndify_client_key"]
+    }));
+    
+    //sends the request to Houndify backend with authentication headers
+    app.get(API_BASE + '/textSearchProxy', houndifyExpress.createTextProxyHandler());
+```
 
 ## Step 3: Creating a RESTful API 
 We want to expose the Twitter Client to post and fetch our tweets.  
