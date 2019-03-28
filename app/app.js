@@ -11,7 +11,7 @@
 // scripts that could be running.
 (function() {
     var API_BASE_URL = 'http://localhost:8080/api';
-    var houndClientId = '***REMOVED***';
+    var houndClientId = '';
 
     //REQUEST INFO JSON
     // @see https://houndify.com/reference/RequestInfo
